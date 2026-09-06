@@ -1,10 +1,14 @@
 import FolderCard from "./FolderCard"
 import FoldersHeader from "./FoldersHeader"
 
-function FoldersPanel() {
+type FoldersPanelProps = {
+  onNewFolder: () => void
+}
+
+function FoldersPanel({ onNewFolder }: FoldersPanelProps) {
   return (
     <aside>
-      <FoldersHeader />
+      <FoldersHeader onNewFolder={onNewFolder} />
 
       <div className="flex max-h-[calc(100vh-200px)] flex-col gap-3 overflow-y-auto">
         <FolderCard />

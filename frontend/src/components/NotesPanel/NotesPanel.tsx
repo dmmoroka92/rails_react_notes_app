@@ -1,10 +1,14 @@
 import NotesHeader from "./NotesHeader"
 import NotesGrid from "./NotesGrid"
 
-function NotesPanel() {
+type NotesPanelProps = {
+  onNewNote: () => void
+}
+
+function NotesPanel({ onNewNote }: NotesPanelProps) {
   return (
     <section>
-      <NotesHeader />
+      <NotesHeader onNewNote={onNewNote} />
       <NotesGrid />
     </section>
   )
