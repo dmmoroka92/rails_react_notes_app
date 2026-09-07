@@ -25,7 +25,7 @@ function NoteModal({ note, onClose }: NoteModalProps) {
       toast.success(response.meta.message ?? "Note created successfully")
       
       queryClient.invalidateQueries({
-        queryKey:[NOTES]
+        queryKey: [NOTES]
       })
 
       onClose()
@@ -68,7 +68,6 @@ function NoteModal({ note, onClose }: NoteModalProps) {
     ? "Update note"
     : "Create note"
   
-
   return (
     <Modal
       title={isEditMode ? "Update note" : "New note"}

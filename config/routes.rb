@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get "up" => "rails/health#show", as: :rails_health_check
-
-  # Defines the root path route ("/")
-  resources :notes
+  resources :notes, only: %i[index create update destroy]
+  resources :folders, only: %i[index create update destroy]
 end

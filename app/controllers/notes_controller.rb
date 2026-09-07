@@ -15,7 +15,7 @@ class NotesController < ApplicationController
                      note,
                      meta: { message: "Note created successfully." }
                    ).serializable_hash,
-      status: :ok
+             status: :ok
     else
       render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
     end
