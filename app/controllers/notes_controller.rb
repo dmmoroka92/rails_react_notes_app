@@ -1,5 +1,5 @@
 class NotesController < ApplicationController
-  before_action :set_note, only: %i[update]
+  before_action :set_note, only: %i[update destroy]
 
   def index
     @notes = Note.all
@@ -28,6 +28,16 @@ class NotesController < ApplicationController
         meta: { message: "Note updated successfully." }
       ).serializable_hash,
       status: :ok
+    else
+      render json: { errors: @note.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def destroy
+    if @note.destroy
+      render json: {
+        meta: { message: "Note was destroyed successfully." }
+      }, status: :ok
     else
       render json: { errors: @note.errors.full_messages }, status: :unprocessable_entity
     end

@@ -1,14 +1,12 @@
 import { useMutation } from "@tanstack/react-query"
 import Modal from "../../components/Modal/Modal"
 import NoteForm from "../../components/NotesPanel/NoteForm"
-import { apiFetch } from "../../lib/api/apiFetch"
 import type { Note } from "../../components/NotesPanel/types"
-import { API_HOST } from "../../constants/api"
 import type { NoteFormData } from "../../schemas/note.schema"
 import queryClient from "../../lib/queryClient"
 import { NOTES } from "../../constants/queryKeys"
-import type { ApiResponse } from "../../types/api"
 import { toast } from "sonner"
+import { createNote, updateNote } from "../../api/notes"
 
 type NoteModalProps = {
   note: Note
@@ -21,30 +19,6 @@ type UpdateNoteParams = {
 }
 
 function NoteModal({ note, onClose }: NoteModalProps) {
-  function createNote(data: NoteFormData) {
-    return apiFetch<ApiResponse<Note>>(`${API_HOST}/notes`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        note: data
-      })
-    })
-  }
-
-  function updateNote(noteId: string, data: NoteFormData) {
-    return apiFetch<ApiResponse<Note>>(`${API_HOST}/notes/${noteId}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        note: data
-      })
-    })
-  }
-
   const createNoteMutation = useMutation({
     mutationFn: createNote,
     onSuccess: (response) => {
@@ -83,7 +57,7 @@ function NoteModal({ note, onClose }: NoteModalProps) {
     isPending: isUpdatePending,
     error: updateError
   } = updateNoteMutation
-  const isEditMode = note != null
+  const isEditMode = note !== null
   const isNoteMutationPending = isCreatePending || isUpdatePending
   const noteMutationError = createError ?? updateError
   const submitLabel = isNoteMutationPending
@@ -97,7 +71,7 @@ function NoteModal({ note, onClose }: NoteModalProps) {
 
   return (
     <Modal
-      title={note ? "Update note" : "New note"}
+      title={isEditMode ? "Update note" : "New note"}
       footer={
         <>
           <button
@@ -113,7 +87,7 @@ function NoteModal({ note, onClose }: NoteModalProps) {
           <button
             type="submit"
             form="note-form"
-            disabled={isCreatePending}
+            disabled={isNoteMutationPending}
             className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white 
               shadow-sm transition hover:bg-gray-800 focus:outline-none 
               focus:ring-2 focus:ring-gray-400"

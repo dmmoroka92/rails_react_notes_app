@@ -31,6 +31,13 @@ export async function apiFetch<T>(
     ? camelcaseKeys(meta, { deep: true })
     : undefined
 
+  // Response contains no data, e.g. DELETE
+  if (data === undefined) {
+    return {
+      meta: camelizedMeta,
+    }
+  }   
+
   if (Array.isArray(camelizedData)) {
     return {
       data: camelizedData.map(({ id, attributes }) => ({

@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import FoldersPanel from "../../components/FoldersPanel/FoldersPanel"
 import {
@@ -12,6 +12,10 @@ import { NOTES } from "../../constants/queryKeys"
 import { apiFetch } from "../../lib/api/apiFetch"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
+import ConfirmModal from "../../components/ConfirmModal"
+import { deleteNote } from "../../api/notes"
+import { toast } from "sonner"
+import queryClient from "../../lib/queryClient"
 
 function NotesPage() {
   const [modal, setModal] = useState<ModalType | null>(null)
@@ -24,7 +28,7 @@ function NotesPage() {
 
   function handleNoteDelete(note: Note) {
     setSelectedNote(note)
-    // open confirmation modal
+    setModal(MODAL_TYPE.Confirm)
   }
 
   const { data: notes, error, isFetching } = useQuery({
@@ -39,8 +43,30 @@ function NotesPage() {
   }
 
   function handleClose() {
+    console.log("handling close modal...")
     setModal(null)
+    setSelectedNote(null)
   }
+
+  const deleteNoteMutation = useMutation({
+    mutationFn: (noteId: string) => deleteNote(noteId),
+
+    onSuccess: (response) => {
+      toast.success(response.meta?.message ?? "Note was deleted.")
+
+      queryClient.invalidateQueries({
+        queryKey: [NOTES],
+      })
+
+
+      handleClose()
+    },
+    
+    onError: (error) => {
+      console.error("Delete note failed:", error)
+      toast.error("Failed to delete note.")
+    },
+  })
 
   return (
     <div>
@@ -70,6 +96,15 @@ function NotesPage() {
       {modal === MODAL_TYPE.Note && <NoteModal note={selectedNote} onClose={handleClose} />}
 
       {modal === MODAL_TYPE.Folder && <FolderModal onClose={handleClose} />}
+
+      {modal === MODAL_TYPE.Confirm && (
+        <ConfirmModal
+          title="Delete note"
+          message="Are you sure you want to delete note?"
+          onConfirm={() => deleteNoteMutation.mutate(selectedNote.id)}
+          onClose={handleClose}
+        />
+      )}
     </div>
   )
 }
