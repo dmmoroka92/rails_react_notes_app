@@ -1,27 +1,31 @@
+import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import FoldersPanel from "../../components/FoldersPanel/FoldersPanel"
-import { 
-  MODAL_TYPE, 
-  type ModalType 
+import {
+  MODAL_TYPE,
+  type ModalType
 } from "../../components/Modal/types"
 import NotesPanel from "../../components/NotesPanel/NotesPanel"
+import type { Note } from "../../components/NotesPanel/types"
+import { API_HOST } from "../../constants/api"
+import { NOTES } from "../../constants/queryKeys"
+import { apiFetch } from "../../lib/api/apiFetch"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
-import { API_HOST } from "../../constants/api"
-import { useQuery } from "@tanstack/react-query"
-import { apiFetch } from "../../lib/api/apiFetch"
-import type { Note } from "../../components/NotesPanel/types"
+import type { ApiResponse } from "../../types/api"
 
 function NotesPage() {
   const [modal, setModal] = useState<ModalType | null>(null)
 
   const { data: notes, error, isFetching } = useQuery({
-    queryKey: ["notes"],
+    queryKey: [NOTES],
     queryFn: fetchNotes
   })
 
   async function fetchNotes() {
-    return await apiFetch<Note[]>(`${API_HOST}/notes`)
+    const response =  await apiFetch<ApiResponse<Note[]>>(`${API_HOST}/notes`)
+
+    return response.data
   }
 
   function handleClose() {

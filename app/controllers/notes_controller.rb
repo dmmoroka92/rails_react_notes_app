@@ -9,10 +9,11 @@ class NotesController < ApplicationController
     note = Note.new(note_params)
 
     if note.save
-      render json: NoteSerializer.new(note)
-                                 .serializable_hash(
-                                   message: "Note created successfully."
-                                 ), status: :ok
+      render json: NoteSerializer.new(
+                     note,
+                     meta: { message: "Note created successfully." }
+                   ).serializable_hash,
+      status: :ok
     else
       render json: { errors: note.errors.full_messages }, status: :unprocessable_entity
     end
