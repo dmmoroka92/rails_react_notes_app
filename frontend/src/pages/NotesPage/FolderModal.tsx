@@ -14,7 +14,7 @@ type FolderModalProps = {
 }
 
 type UpdateFolderParams = {
-  folderId: string
+  slug: string
   data: FolderFormData
 }
 
@@ -33,8 +33,8 @@ function FolderModal({ folder, onClose }: FolderModalProps) {
   })
 
   const updateFolderMutation = useMutation({
-    mutationFn: ({ folderId, data }: UpdateFolderParams) =>
-      updateFolder(folderId, data),
+    mutationFn: ({ slug, data }: UpdateFolderParams) =>
+      updateFolder(slug, data),
   
     onSuccess: (response) => {
       toast.success(
@@ -99,7 +99,7 @@ function FolderModal({ folder, onClose }: FolderModalProps) {
         folder={folder}
         onSubmit={(data) => {
           if (isEditMode) {
-            updateFolderMutation.mutate({ folderId: folder.id, data })
+            updateFolderMutation.mutate({ slug: folder.slug, data })
           } else {
             createFolderMutation.mutate(data)
           }

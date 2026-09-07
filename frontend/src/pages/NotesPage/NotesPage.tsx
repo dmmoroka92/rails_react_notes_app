@@ -60,7 +60,7 @@ function NotesPage() {
 
   function handleFolderDelete(folder: Folder) {
     setSelectedFolder(folder)
-    setModal(MODAL_TYPE.Confirm)
+    setModal(MODAL_TYPE.ConfirmFolder)
   }
 
   function handleNoteEdit(note: Note) {
@@ -70,7 +70,7 @@ function NotesPage() {
 
   function handleNoteDelete(note: Note) {
     setSelectedNote(note)
-    setModal(MODAL_TYPE.Confirm)
+    setModal(MODAL_TYPE.ConfirmNote)
   }
 
   const { data: notes, error, isFetching } = useQuery({
@@ -120,7 +120,7 @@ function NotesPage() {
   })
 
   const deleteFolderMutation = useMutation({
-    mutationFn: (folderId: string) => deleteFolder(folderId),
+    mutationFn: (slug: string) => deleteFolder(slug),
 
     onSuccess: (response) => {
       toast.success(response.meta?.message ?? "Note was deleted.")
@@ -171,7 +171,7 @@ function NotesPage() {
 
       {modal === MODAL_TYPE.Folder && <FolderModal folder={selectedFolder} onClose={handleClose} />}
 
-      {modal === MODAL_TYPE.Confirm && (
+      {modal === MODAL_TYPE.ConfirmNote && (
         <ConfirmModal
           title="Delete note"
           message="Are you sure you want to delete note?"
@@ -180,11 +180,11 @@ function NotesPage() {
         />
       )}
 
-      {modal === MODAL_TYPE.Confirm && (
+      {modal === MODAL_TYPE.ConfirmFolder && (
         <ConfirmModal
           title="Delete folder"
           message="All notes in this folder will also be deleted. Are you sure?"
-          onConfirm={() => deleteFolderMutation.mutate(selectedFolder.id)}
+          onConfirm={() => deleteFolderMutation.mutate(selectedFolder.slug)}
           onClose={handleClose}
         />
       )}

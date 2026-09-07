@@ -16,8 +16,8 @@ export function createFolder(data: FolderFormData) {
   })
 }
 
-export function updateFolder(folderId: string, data: FolderFormData) {
-  return apiFetch<ApiResponse<Folder>>(`${API_HOST}/folders/${folderId}`, {
+export function updateFolder(slug: string, data: FolderFormData) {
+  return apiFetch<ApiResponse<Folder>>(`${API_HOST}/folders/${slug}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json"
@@ -28,8 +28,8 @@ export function updateFolder(folderId: string, data: FolderFormData) {
   })
 }
 
-export function deleteFolder(folderId: string) {
-  return apiFetch<void>(`${API_HOST}/folders/${folderId}`, {
+export function deleteFolder(slug: string) {
+  return apiFetch<void>(`${API_HOST}/folders/${slug}`, {
     method: "DELETE"
   })
 }

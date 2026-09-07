@@ -1,12 +1,14 @@
 import { useState } from "react"
 
 import type { Folder } from "./types"
+import { Link } from "react-router"
+import { routes } from "../../routes"
 
 type FolderCardProps = {
   folder: Folder
   onEdit: (folder: Folder) => void
   onDelete: (folder: Folder) => void
-  onNoteDrop: (noteId: string, folderId: string) => void
+  onNoteDrop: (noteId: string, slug: string) => void
 }
 
 const MAX_VISIBLE_NOTE_THUMBNAILS = 4
@@ -93,7 +95,11 @@ function FolderCard({ folder, onEdit, onDelete, onNoteDrop }: FolderCardProps) {
           <div className="flex h-full items-end justify-between">
             <div>
               <h3 className="text-xl font-bold text-white">
-                {folder.title}
+                <Link
+                  to={routes.folder(folder.slug)}
+                  className="hover:underline">
+                  {folder.title}
+                </Link>
               </h3>
 
               <p className="text-sm text-white/80">

@@ -1,10 +1,17 @@
 class FoldersController < ApplicationController
-  before_action :set_folder, only: %i[update destroy]
+  before_action :set_folder, only: %i[show update destroy]
 
   def index
     @folders = Folder.all
 
     render json: FolderSerializer.new(@folders).serializable_hash, status: :ok
+  end
+
+  def show
+    render json: FolderSerializer.new(
+      @folder,
+      include: [:notes]
+    ).serializable_hash, status: :ok
   end
 
   def create
@@ -50,6 +57,6 @@ class FoldersController < ApplicationController
   end
 
   def set_folder
-    @folder = Folder.find(params[:id])
+    @folder = Folder.find_by!(slug: params[:slug])
   end
 end

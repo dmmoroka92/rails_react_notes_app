@@ -22,7 +22,6 @@ class NotesController < ApplicationController
   end
 
   def update
-
     if @note.update(note_params)
       render json: NoteSerializer.new(
         @note,

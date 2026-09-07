@@ -1,7 +1,8 @@
 import camelcaseKeys from "camelcase-keys"
 import snakecaseKeys from "snakecase-keys"
 
-import type { ApiResponse } from "../../types/api"
+import type { ApiResponse, JsonApiDocument } from "../../types/api"
+import { JsonApiAdapter } from "../jsonApiAdapter"
 
 export async function apiFetch<T>(
   url: string,
@@ -23,36 +24,12 @@ export async function apiFetch<T>(
     throw new Error("API request failed")
   }
 
-  const { data, meta } = await response.json()
+  const json = await response.json()
 
-  const camelizedData = camelcaseKeys(data, { deep: true })
+  const camelizedDocument = camelcaseKeys(
+    json,
+    { deep: true },
+  ) as JsonApiDocument
 
-  const camelizedMeta = meta
-    ? camelcaseKeys(meta, { deep: true })
-    : undefined
-
-  // Response contains no data, e.g. DELETE
-  if (data === undefined) {
-    return {
-      meta: camelizedMeta,
-    }
-  }   
-
-  if (Array.isArray(camelizedData)) {
-    return {
-      data: camelizedData.map(({ id, attributes }) => ({
-        id,
-        ...attributes,
-      })),
-      meta: camelizedMeta,
-    } as ApiResponse<T>
-  }
-
-  return {
-    data: {
-      id: camelizedData.id,
-      ...camelizedData.attributes,
-    },
-    meta: camelizedMeta,
-  } as ApiResponse<T>
+  return JsonApiAdapter.call<T>(camelizedDocument)
 }

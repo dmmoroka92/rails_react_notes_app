@@ -10,7 +10,7 @@ type FoldersPanelProps = {
   onNewFolder: () => void
   onEditFolder: (folder: Folder) => void
   onDeleteFolder: (folder: Folder) => void
-  onNoteDrop: (noteId: string, folderId: string) => void
+  onNoteDrop: (noteId: string, slug: string) => void
 }
 
 function FoldersPanel({
