@@ -113,6 +113,8 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.21.2)
+    jsonapi-serializer (2.2.0)
+      activesupport (>= 4.2)
     kamal (2.12.0)
       activesupport (>= 7.0)
       base64 (~> 0.2)
@@ -330,6 +332,7 @@ DEPENDENCIES
   brakeman
   debug
   dotenv-rails (>= 3.2)
+  jsonapi-serializer (>= 2.2)
   kamal
   mysql2 (~> 0.5)
   puma (>= 5.0)
