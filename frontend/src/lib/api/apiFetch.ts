@@ -1,17 +1,21 @@
 import camelcaseKeys from "camelcase-keys"
 import snakecaseKeys from "snakecase-keys"
 
+import type { ApiResponse } from "../../types/api"
+
 export async function apiFetch<T>(
   url: string,
-  options?: RequestInit
-): Promise<T> {
+  options?: RequestInit,
+): Promise<ApiResponse<T>> {
   const body = options?.body
 
   const response = await fetch(url, {
     ...options,
     body:
       typeof body === "string"
-        ? JSON.stringify(snakecaseKeys(JSON.parse(body), { deep: true }))
+        ? JSON.stringify(
+            snakecaseKeys(JSON.parse(body), { deep: true }),
+          )
         : body,
   })
 
@@ -22,6 +26,7 @@ export async function apiFetch<T>(
   const { data, meta } = await response.json()
 
   const camelizedData = camelcaseKeys(data, { deep: true })
+
   const camelizedMeta = meta
     ? camelcaseKeys(meta, { deep: true })
     : undefined
@@ -33,7 +38,7 @@ export async function apiFetch<T>(
         ...attributes,
       })),
       meta: camelizedMeta,
-    } as T
+    } as ApiResponse<T>
   }
 
   return {
@@ -42,5 +47,5 @@ export async function apiFetch<T>(
       ...camelizedData.attributes,
     },
     meta: camelizedMeta,
-  } as T
+  } as ApiResponse<T>
 }

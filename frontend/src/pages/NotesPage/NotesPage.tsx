@@ -12,10 +12,20 @@ import { NOTES } from "../../constants/queryKeys"
 import { apiFetch } from "../../lib/api/apiFetch"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
-import type { ApiResponse } from "../../types/api"
 
 function NotesPage() {
   const [modal, setModal] = useState<ModalType | null>(null)
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null)
+
+  function handleNoteEdit(note: Note) {
+    setSelectedNote(note)
+    setModal(MODAL_TYPE.Note)
+  }
+
+  function handleNoteDelete(note: Note) {
+    setSelectedNote(note)
+    // open confirmation modal
+  }
 
   const { data: notes, error, isFetching } = useQuery({
     queryKey: [NOTES],
@@ -23,7 +33,7 @@ function NotesPage() {
   })
 
   async function fetchNotes() {
-    const response =  await apiFetch<ApiResponse<Note[]>>(`${API_HOST}/notes`)
+    const response =  await apiFetch<Note[]>(`${API_HOST}/notes`)
 
     return response.data
   }
@@ -52,10 +62,12 @@ function NotesPage() {
           error={error}
           notes={notes ?? []}
           onNewNote={() => setModal(MODAL_TYPE.Note)}
+          onEditNote={handleNoteEdit}
+          onDeleteNote={handleNoteDelete}
         />
       </div>
 
-      {modal === MODAL_TYPE.Note && <NoteModal onClose={handleClose} />}
+      {modal === MODAL_TYPE.Note && <NoteModal note={selectedNote} onClose={handleClose} />}
 
       {modal === MODAL_TYPE.Folder && <FolderModal onClose={handleClose} />}
     </div>

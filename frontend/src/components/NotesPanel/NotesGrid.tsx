@@ -4,14 +4,19 @@ import type { Note } from "./types"
 
 type NotesGridProps = {
   notes: Note[]
+  onEditNote: (note: Note) => void
+  onDeleteNote: (note: Note) => void
   isLoading?: boolean
   error?: Error | null
 }
 
 function NotesGrid({
   notes,
+  onEditNote,
+  onDeleteNote,
   isLoading = false,
   error = null,
+  
 }: NotesGridProps) {
   if (isLoading) {
     return (
@@ -50,7 +55,12 @@ function NotesGrid({
   return (
     <div className="grid max-h-[calc(100vh-200px)] grid-cols-2 gap-6 overflow-y-auto">
       {notes.map((note) => (
-        <NoteCard key={note.id} note={note} />
+        <NoteCard
+          key={note.id}
+          note={note}
+          onEdit={onEditNote}
+          onDelete={onDeleteNote}
+        />
       ))}
     </div>
   )

@@ -2,13 +2,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { noteSchema, type NoteFormData } from "../../schemas/note.schema"
 import InputGroup from "../InputGroup"
+import type { Note } from "./types"
 
 type NoteFormProps = {
+  note: Note | null
   onSubmit: (data: NoteFormData) => void
   error: Error | null
 }
 
 function NoteForm({
+  note,
   onSubmit,
   error,
 }: NoteFormProps) {
@@ -18,6 +21,10 @@ function NoteForm({
     formState: { errors },
   } = useForm<NoteFormData>({
     resolver: zodResolver(noteSchema),
+    defaultValues: {
+      title: note?.title ?? "",
+      description: note?.description ?? ""
+    }
   })
 
   return (

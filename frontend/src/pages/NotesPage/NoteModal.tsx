@@ -11,13 +11,31 @@ import type { ApiResponse } from "../../types/api"
 import { toast } from "sonner"
 
 type NoteModalProps = {
+  note: Note
   onClose: () => void
 }
 
-function NoteModal({ onClose }: NoteModalProps) {
+type UpdateNoteParams = {
+  noteId: string
+  data: NoteFormData
+}
+
+function NoteModal({ note, onClose }: NoteModalProps) {
   function createNote(data: NoteFormData) {
     return apiFetch<ApiResponse<Note>>(`${API_HOST}/notes`, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        note: data
+      })
+    })
+  }
+
+  function updateNote(noteId: string, data: NoteFormData) {
+    return apiFetch<ApiResponse<Note>>(`${API_HOST}/notes/${noteId}`, {
+      method: "PATCH",
       headers: {
         "Content-Type": "application/json"
       },
@@ -40,14 +58,46 @@ function NoteModal({ onClose }: NoteModalProps) {
     }
   })
 
+  const updateNoteMutation = useMutation({
+    mutationFn: ({ noteId, data }: UpdateNoteParams) =>
+      updateNote(noteId, data),
+  
+    onSuccess: (response) => {
+      toast.success(
+        response.meta?.message ?? "Note updated successfully"
+      )
+  
+      queryClient.invalidateQueries({
+        queryKey: [NOTES],
+      })
+  
+      onClose()
+    },
+  })
+
   const { 
-    isPending: isNoteCreationPending,
-    error: noteCreationError 
+    isPending: isCreatePending,
+    error: createError 
   } = createNoteMutation
+  const {
+    isPending: isUpdatePending,
+    error: updateError
+  } = updateNoteMutation
+  const isEditMode = note != null
+  const isNoteMutationPending = isCreatePending || isUpdatePending
+  const noteMutationError = createError ?? updateError
+  const submitLabel = isNoteMutationPending
+  ? isEditMode
+    ? "Updating note..."
+    : "Creating note..."
+  : isEditMode
+    ? "Update note"
+    : "Create note"
+  
 
   return (
     <Modal
-      title="New note"
+      title={note ? "Update note" : "New note"}
       footer={
         <>
           <button
@@ -63,19 +113,26 @@ function NoteModal({ onClose }: NoteModalProps) {
           <button
             type="submit"
             form="note-form"
-            disabled={isNoteCreationPending}
+            disabled={isCreatePending}
             className="rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white 
               shadow-sm transition hover:bg-gray-800 focus:outline-none 
               focus:ring-2 focus:ring-gray-400"
           >
-            {isNoteCreationPending ? "Creating note..." : "Create note"}
+            {submitLabel}
           </button>
         </>
       }
       onClose={onClose}>
       <NoteForm
-        error={noteCreationError}
-        onSubmit={(data) => createNoteMutation.mutate(data)}
+        note={note}
+        error={noteMutationError}
+        onSubmit={(data) => {
+          if (isEditMode) {
+            updateNoteMutation.mutate({ noteId: note.id, data })
+          } else {
+            createNoteMutation.mutate(data)
+          }
+        }}
       />
     </Modal>
   )

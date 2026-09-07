@@ -7,11 +7,15 @@ type NotesPanelProps = {
   error?: Error | null
   notes: Note[]
   onNewNote: () => void
+  onEditNote: (note: Note) => void
+  onDeleteNote: (note: Note) => void
 }
 
 function NotesPanel({
   notes,
   onNewNote,
+  onEditNote,
+  onDeleteNote,
   isLoading = false,
   error = null 
 }: NotesPanelProps) {
@@ -22,6 +26,8 @@ function NotesPanel({
         notes={notes}
         isLoading={isLoading}
         error={error}
+        onEditNote={onEditNote}
+        onDeleteNote={onDeleteNote}
       />
     </section>
   )

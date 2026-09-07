@@ -1,4 +1,6 @@
 class NotesController < ApplicationController
+  before_action :set_note, only: %i[update]
+
   def index
     @notes = Note.all
 
@@ -19,9 +21,25 @@ class NotesController < ApplicationController
     end
   end
 
+  def update
+    if @note.update(note_params)
+      render json: NoteSerializer.new(
+        @note,
+        meta: { message: "Note updated successfully." }
+      ).serializable_hash,
+      status: :ok
+    else
+      render json: { errors: @note.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def note_params
     params.require(:note).permit(:title, :description)
+  end
+
+  def set_note
+    @note = Note.find(params[:id])
   end
 end
