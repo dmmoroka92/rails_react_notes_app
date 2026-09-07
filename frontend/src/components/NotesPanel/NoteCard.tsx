@@ -22,7 +22,7 @@ function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
       onDragStart={handleDragStart}
       className="rounded-3xl bg-white p-6 shadow-sm"
     >
-      <h3 className="mb-3 text-xl font-bold">
+      <h3 className="mb-3 truncate text-xl font-bold">
         {note.title}
       </h3>
 
