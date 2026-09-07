@@ -6,3 +6,9 @@ export const noteSchema = z.object({
 })
 
 export type NoteFormData = z.infer<typeof noteSchema>
+
+export type UpdateNoteData = {
+  title?: string
+  description?: string
+  folderId?: string | null
+}

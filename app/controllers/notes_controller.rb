@@ -2,7 +2,7 @@ class NotesController < ApplicationController
   before_action :set_note, only: %i[update destroy]
 
   def index
-    @notes = Note.all
+    @notes = Note.unfiled
 
     render json: NoteSerializer.new(@notes).serializable_hash, status: :ok
   end
@@ -22,6 +22,7 @@ class NotesController < ApplicationController
   end
 
   def update
+
     if @note.update(note_params)
       render json: NoteSerializer.new(
         @note,
@@ -46,7 +47,7 @@ class NotesController < ApplicationController
   private
 
   def note_params
-    params.require(:note).permit(:title, :description)
+    params.require(:note).permit(:title, :description, :folder_id)
   end
 
   def set_note

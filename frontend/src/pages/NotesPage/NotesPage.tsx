@@ -1,7 +1,8 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { toast } from "sonner"
-import { deleteNote } from "../../api/notes"
+import { deleteFolder } from "../../api/folders"
+import { deleteNote, updateNote } from "../../api/notes"
 import ConfirmModal from "../../components/ConfirmModal"
 import FoldersPanel from "../../components/FoldersPanel/FoldersPanel"
 import type { Folder } from "../../components/FoldersPanel/types"
@@ -17,12 +18,40 @@ import { apiFetch } from "../../lib/api/apiFetch"
 import queryClient from "../../lib/queryClient"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
-import { deleteFolder } from "../../api/folders"
+
+type AssignNoteToFolderParams = {
+  noteId: string
+  folderId: string
+}
 
 function NotesPage() {
   const [modal, setModal] = useState<ModalType | null>(null)
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
+
+  const assignNoteMutation = useMutation({
+    mutationFn: ({ noteId, folderId }: AssignNoteToFolderParams) =>
+      updateNote(noteId, { folderId }),
+  
+    onSuccess: (response) => {
+      toast.success(response.meta?.message ?? "Note was assigned to folder")
+
+      queryClient.invalidateQueries({
+        queryKey: [NOTES],
+      })
+  
+      queryClient.invalidateQueries({
+        queryKey: [FOLDERS],
+      })
+    },
+  })
+
+  function handleDropNote(noteId: string, folderId: string) {
+    assignNoteMutation.mutate({
+      noteId,
+      folderId
+    })
+  }
 
   function handleFolderEdit(folder: Folder) {
     setSelectedFolder(folder)
@@ -124,6 +153,7 @@ function NotesPage() {
           onNewFolder={() => setModal(MODAL_TYPE.Folder)}
           onEditFolder={handleFolderEdit}
           onDeleteFolder={handleFolderDelete}
+          onNoteDrop={handleDropNote}
         />
 
         {/* Notes */}

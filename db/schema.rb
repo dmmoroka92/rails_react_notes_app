@@ -23,7 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_07_141506) do
     t.text "description", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "folder_id", null: false
+    t.bigint "folder_id"
     t.index ["folder_id"], name: "index_notes_on_folder_id"
   end
 

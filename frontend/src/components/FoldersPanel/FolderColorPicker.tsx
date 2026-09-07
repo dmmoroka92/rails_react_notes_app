@@ -14,7 +14,7 @@ function FolderColorPicker({ register }: FolderColorPickerProps) {
                   
           Object.values(FOLDER_COLORS).map(color => {
             return (
-              <label className="cursor-pointer">
+              <label key={color} className="cursor-pointer">
                 <input
                   id={`color-${color}`}
                   type="radio"

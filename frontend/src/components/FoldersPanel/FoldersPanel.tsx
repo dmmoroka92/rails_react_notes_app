@@ -10,6 +10,7 @@ type FoldersPanelProps = {
   onNewFolder: () => void
   onEditFolder: (folder: Folder) => void
   onDeleteFolder: (folder: Folder) => void
+  onNoteDrop: (noteId: string, folderId: string) => void
 }
 
 function FoldersPanel({
@@ -19,6 +20,7 @@ function FoldersPanel({
   onNewFolder,
   onEditFolder,
   onDeleteFolder,
+  onNoteDrop
 }: FoldersPanelProps) {
   return (
     <aside>
@@ -57,6 +59,7 @@ function FoldersPanel({
               folder={folder}
               onEdit={onEditFolder}
               onDelete={onDeleteFolder}
+              onNoteDrop={onNoteDrop}
             />
           ))}
       </div>

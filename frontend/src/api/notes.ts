@@ -1,7 +1,7 @@
 import type { Note } from "../components/NotesPanel/types"
 import { API_HOST } from "../constants/api"
 import { apiFetch } from "../lib/api/apiFetch"
-import type { NoteFormData } from "../schemas/note.schema"
+import type { NoteFormData, UpdateNoteData } from "../schemas/note.schema"
 import type { ApiResponse } from "../types/api"
 
 export function createNote(data: NoteFormData) {
@@ -16,7 +16,7 @@ export function createNote(data: NoteFormData) {
   })
 }
 
-export function updateNote(noteId: string, data: NoteFormData) {
+export function updateNote(noteId: string, data: UpdateNoteData) {
   return apiFetch<ApiResponse<Note>>(`${API_HOST}/notes/${noteId}`, {
     method: "PATCH",
     headers: {

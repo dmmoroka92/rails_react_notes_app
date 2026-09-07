@@ -11,8 +11,17 @@ type NoteCardProps = {
 function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
+  function handleDragStart(event: React.DragEvent) {
+    console.log("Started dragging note:", note.id)
+    event.dataTransfer.setData("text/plain", note.id)
+  }
+
   return (
-    <article className="rounded-3xl bg-white p-6 shadow-sm">
+    <article
+      draggable
+      onDragStart={handleDragStart}
+      className="rounded-3xl bg-white p-6 shadow-sm"
+    >
       <h3 className="mb-3 text-xl font-bold">
         {note.title}
       </h3>

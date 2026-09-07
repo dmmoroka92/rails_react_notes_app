@@ -6,6 +6,7 @@ type FolderCardProps = {
   folder: Folder
   onEdit: (folder: Folder) => void
   onDelete: (folder: Folder) => void
+  onNoteDrop: (noteId: string, folderId: string) => void
 }
 
 const MAX_VISIBLE_NOTE_THUMBNAILS = 4
@@ -17,7 +18,7 @@ const NOTE_THUMBNAIL_ROTATIONS = [
   "rotate-2",
 ]
 
-function FolderCard({ folder, onEdit, onDelete }: FolderCardProps) {
+function FolderCard({ folder, onEdit, onDelete, onNoteDrop }: FolderCardProps) {
   const visibleNoteThumbnailsNum = Math.min(
     folder.notesCount,
     MAX_VISIBLE_NOTE_THUMBNAILS,
@@ -25,9 +26,26 @@ function FolderCard({ folder, onEdit, onDelete }: FolderCardProps) {
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
+  function handleDragOver(event: React.DragEvent) {
+    event.preventDefault()
+    console.log("dragging over the folder")
+  }
+
+  function handleDrop(event: React.DragEvent) {
+    event.preventDefault()
+
+    const noteId = event.dataTransfer.getData("text/plain")
+
+    console.log("dropped noteId", noteId)
+
+    onNoteDrop(noteId, folder.id)
+  }
+
   return (
     <div className="relative h-48 w-full">
       <div
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
         className={`absolute inset-x-0 bottom-0 h-40 rounded-2xl
          bg-${folder.color}-500 shadow-md`}
       >
