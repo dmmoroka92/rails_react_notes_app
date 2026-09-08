@@ -8,15 +8,26 @@ import { useQuery } from "@tanstack/react-query"
 import { formatDate } from "../helpers"
 import PaginationControls from "../components/Pagination/PaginationControls"
 import { useState } from "react"
+import { useSearch } from "../hooks/useSearch"
 
 function FolderPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
   const [folderNotesPage, setFolderNotesPage] = useState<number>(1)
+  const {
+    search,
+    setSearch,
+    debouncedSearch
+  } = useSearch()
 
-  async function fetchFolder(slug: string, notesPage: number) {
+  async function fetchFolder(slug: string, searchQuery: string = "", notesPage: number = 1) {
+    const params = new URLSearchParams({
+      page: String(notesPage),
+      q: searchQuery
+    })
+    
     const response = await apiFetch<FolderWithNotes>(
-      `${API_HOST}/folders/${slug}?page=${notesPage}`,
+      `${API_HOST}/folders/${slug}?${params}`,
     )
 
     return response
@@ -31,8 +42,8 @@ function FolderPage() {
     error,
     isPending,
   } = useQuery({
-    queryKey: ["folder", slug, folderNotesPage],
-    queryFn: () => fetchFolder(slug!, folderNotesPage),
+    queryKey: ["folder", slug, debouncedSearch, folderNotesPage],
+    queryFn: () => fetchFolder(slug!, debouncedSearch, folderNotesPage),
   })
 
   const folder = fetchFolderResponse?.data
@@ -66,13 +77,25 @@ function FolderPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <button
-        onClick={() => navigate(-1)}
-        className="w-fit text-sm font-medium text-gray-500 
-          transition hover:text-gray-900"
-      >
-        ← Back to notes
-      </button>
+      <header className="flex items-center justify-between gap-4">
+        <button
+          onClick={() => navigate(-1)}
+          className="w-fit text-sm font-medium text-gray-500 transition hover:text-gray-900"
+        >
+          ← Back to notes
+        </button>
+
+        <input
+          type="search"
+          placeholder="Search notes..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="w-64 rounded-lg border border-gray-200 bg-white px-4
+            py-2 text-sm outline-none transition focus:border-gray-400 
+            focus:ring-2 focus:ring-gray-200"
+        />
+      </header>
+
 
       <section className="rounded-2xl bg-white p-6 shadow-sm">
         <div className="flex items-center gap-4">

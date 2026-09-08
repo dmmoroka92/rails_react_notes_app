@@ -11,6 +11,7 @@ class FoldersController < ApplicationController
 
   def show
     notes = @folder.notes.page(params[:page]).per(10)
+    notes = notes.where("title LIKE ?", "%#{params[:q]}%") if params[:q].present?
     
     render json: FolderSerializer.new(
                     @folder,
