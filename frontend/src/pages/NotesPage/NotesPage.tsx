@@ -19,6 +19,7 @@ import queryClient from "../../lib/queryClient"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
 import { useSearch } from "../../hooks/useSearch"
+import NoteSelectionContextProvider from "../../components/NoteSelectionContextProvider"
 
 type AssignNoteToFolderParams = {
   noteId: string
@@ -175,28 +176,30 @@ function NotesPage() {
       <div className="my-6 h-px bg-gray-200" />
       {/* Workspace */}
       <div className="grid grid-cols-[240px_1fr] gap-8">
-        {/* Folders */}
-        <FoldersPanel
-          isLoading={isFoldersFetching}
-          error={foldersFetchError}
-          folders={folders}
-          onNewFolder={() => setModal(MODAL_TYPE.Folder)}
-          onEditFolder={handleFolderEdit}
-          onDeleteFolder={handleFolderDelete}
-          onNoteDrop={handleDropNote}
-        />
+        <NoteSelectionContextProvider>
+          {/* Folders */}
+          <FoldersPanel
+            isLoading={isFoldersFetching}
+            error={foldersFetchError}
+            folders={folders}
+            onNewFolder={() => setModal(MODAL_TYPE.Folder)}
+            onEditFolder={handleFolderEdit}
+            onDeleteFolder={handleFolderDelete}
+            onNoteDrop={handleDropNote}
+          />
 
-        {/* Notes */}
-        <NotesPanel
-          isLoading={isFetching}
-          error={error}
-          notes={notes ?? []}
-          onNewNote={() => setModal(MODAL_TYPE.Note)}
-          onEditNote={handleNoteEdit}
-          onDeleteNote={handleNoteDelete}
-          paginationMeta={notesPagination}
-          onPageChange={handleNotesPageChange}
-        />
+          {/* Notes */}
+          <NotesPanel
+            isLoading={isFetching}
+            error={error}
+            notes={notes ?? []}
+            onNewNote={() => setModal(MODAL_TYPE.Note)}
+            onEditNote={handleNoteEdit}
+            onDeleteNote={handleNoteDelete}
+            paginationMeta={notesPagination}
+            onPageChange={handleNotesPageChange}
+          />
+        </NoteSelectionContextProvider>
       </div>
 
       {modal === MODAL_TYPE.Note && <NoteModal note={selectedNote} onClose={handleClose} />}

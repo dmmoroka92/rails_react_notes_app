@@ -33,3 +33,15 @@ export function deleteNote(noteId: string) {
     method: "DELETE"
   })
 }
+
+export function deleteNotes(noteIds: string[]) {
+  const params = new URLSearchParams()
+
+  noteIds.forEach((noteId) => {
+    params.append("note_ids[]", noteId)
+  })
+
+  return apiFetch<void>(`${API_HOST}/notes?${params}`, {
+    method: "DELETE"
+  })
+}

@@ -5,5 +5,7 @@ class Note < ApplicationRecord
 
   validates :title, :description, presence: true
 
-  scope :unfiled, -> { where(folder_id: nil) }
+  scope :active,    -> { where(archived_at: nil) }
+  scope :archived,  -> { where.not(archived_at: nil) }
+  scope :unfiled,   -> { where(folder_id: nil) }
 end

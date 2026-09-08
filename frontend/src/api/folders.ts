@@ -1,11 +1,12 @@
 import type { Folder } from "../components/FoldersPanel/types";
 import { API_HOST } from "../constants/api";
 import { apiFetch } from "../lib/api/apiFetch";
+import { routes } from "../routes";
 import type { FolderFormData } from "../schemas/folder.schema";
 import type { ApiResponse } from "../types/api";
 
 export function createFolder(data: FolderFormData) {
-  return apiFetch<ApiResponse<Folder>>(`${API_HOST}/folders`, {
+  return apiFetch<ApiResponse<Folder>>(`${API_HOST}${routes.folders}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -17,7 +18,7 @@ export function createFolder(data: FolderFormData) {
 }
 
 export function updateFolder(slug: string, data: FolderFormData) {
-  return apiFetch<ApiResponse<Folder>>(`${API_HOST}/folders/${slug}`, {
+  return apiFetch<ApiResponse<Folder>>(`${API_HOST}${routes.folder(slug)}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json"
@@ -29,7 +30,7 @@ export function updateFolder(slug: string, data: FolderFormData) {
 }
 
 export function deleteFolder(slug: string) {
-  return apiFetch<void>(`${API_HOST}/folders/${slug}`, {
+  return apiFetch<void>(`${API_HOST}${routes.folder(slug)}`, {
     method: "DELETE"
   })
 }

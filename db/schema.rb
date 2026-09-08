@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_09_07_191255) do
+ActiveRecord::Schema[8.0].define(version: 2026_09_08_173447) do
   create_table "folders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
     t.string "color", default: "blue", null: false
@@ -26,6 +26,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_09_07_191255) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "folder_id"
+    t.datetime "archived_at"
     t.index ["folder_id"], name: "index_notes_on_folder_id"
   end
 
