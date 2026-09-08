@@ -4,12 +4,13 @@ class NotesController < ApplicationController
   before_action :set_note, only: %i[update destroy]
 
   def index
-    @notes = Note.unfiled.page(params[:page])
+    notes = Note.unfiled.page(params[:page])
+    notes = notes.where("title LIKE ?", "%#{params[:q]}%") if params[:q].present?
 
     render json: NoteSerializer.new(
-                  @notes,
+                  notes,
                   meta: {
-                    pagination: pagination_meta(@notes)
+                    pagination: pagination_meta(notes)
                   }  
                 ).serializable_hash,
            status: :ok

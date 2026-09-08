@@ -18,6 +18,7 @@ import { apiFetch } from "../../lib/api/apiFetch"
 import queryClient from "../../lib/queryClient"
 import FolderModal from "./FolderModal"
 import NoteModal from "./NoteModal"
+import { useSearch } from "../../hooks/useSearch"
 
 type AssignNoteToFolderParams = {
   noteId: string
@@ -29,6 +30,11 @@ function NotesPage() {
   const [notesPage, setNotesPage] = useState<number>(1)
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
+  const {
+    search,
+    debouncedSearch,
+    setSearch
+  } = useSearch()
 
   const assignNoteMutation = useMutation({
     mutationFn: ({ noteId, folderId }: AssignNoteToFolderParams) =>
@@ -79,8 +85,8 @@ function NotesPage() {
   }
 
   const { data: fetchNotesResponse, error, isFetching } = useQuery({
-    queryKey: [NOTES, notesPage],
-    queryFn: () => fetchNotes(notesPage)
+    queryKey: [NOTES, debouncedSearch, notesPage],
+    queryFn: () => fetchNotes(notesPage, debouncedSearch)
   })
 
   const notes = fetchNotesResponse?.data
@@ -95,8 +101,13 @@ function NotesPage() {
     queryFn: fetchFolders
   })
 
-  async function fetchNotes(pageNum: number = 1) {
-    const response =  await apiFetch<Note[]>(`${API_HOST}/notes?page=${pageNum}`)
+  async function fetchNotes(pageNum: number = 1, searchQuery: string = "") {
+    const params = new URLSearchParams({
+      page: String(pageNum),
+      q: searchQuery,
+    })
+    
+    const response =  await apiFetch<Note[]>(`${API_HOST}/notes?${params}`)
 
     return response
   }
@@ -145,9 +156,20 @@ function NotesPage() {
   return (
     <div>
       {/* Header */}
-      <header>
+      <header className="flex items-center justify-between gap-4">
         <h1 className="text-3xl font-bold">Notes</h1>
+
+        <input
+          type="search"
+          placeholder="Search notes..."
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          className="w-64 rounded-lg border border-gray-200 bg-white px-4
+            py-2 text-sm outline-none transition focus:border-gray-400
+            focus:ring-2 focus:ring-gray-200"
+        />
       </header>
+
 
       {/* Divider */}
       <div className="my-6 h-px bg-gray-200" />

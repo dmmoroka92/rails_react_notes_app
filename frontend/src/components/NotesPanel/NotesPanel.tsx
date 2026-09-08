@@ -36,7 +36,7 @@ function NotesPanel({
         onDeleteNote={onDeleteNote}
       />
 
-      {paginationMeta && (
+      {paginationMeta?.totalPages > 1 && (
         <PaginationControls
           meta={paginationMeta}
           onPageChange={onPageChange}
