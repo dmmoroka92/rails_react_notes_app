@@ -3,11 +3,10 @@ import { useNavigate, useParams } from "react-router"
 import type { FolderWithNotes } from "../components/FoldersPanel/types"
 import { API_HOST } from "../constants/api"
 import { apiFetch } from "../lib/api/apiFetch"
-
 import { useQuery } from "@tanstack/react-query"
-import { formatDate } from "../helpers"
-import PaginationControls from "../components/Pagination/PaginationControls"
 import { useState } from "react"
+import PaginationControls from "../components/Pagination/PaginationControls"
+import { formatDate } from "../helpers"
 import { useSearch } from "../hooks/useSearch"
 
 function FolderPage() {

@@ -50,7 +50,8 @@ function NoteForm({
           id="title"
           type="text"
           {...register("title")}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+          className="rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none
+            transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
         />
       </InputGroup>
 
@@ -63,7 +64,9 @@ function NoteForm({
           id="description"
           {...register("description")}
           rows={5}
-          className="resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition focus:border-gray-900 focus:ring-1 focus:ring-gray-900"
+          className="resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm 
+            outline-none transition focus:border-gray-900 focus:ring-1 
+            focus:ring-gray-900"
         />
       </InputGroup>
     </form>

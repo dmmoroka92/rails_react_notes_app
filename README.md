@@ -1,24 +1,28 @@
-# README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+CURRENT APP
+    │
+    ├── useRef
+    │
+    ├── React.memo
+    │
+    ├── useCallback
+    │
+    ├── useMemo
+    │
+    ├── useTransition
+    │
+    ├── useReducer
+    │
+    ├── Context
+    │
+    ├── Zustand
+    │
+    ├── TanStack Query advanced
+    │     ├── placeholderData
+    │     ├── prefetching
+    │     ├── optimistic updates
+    │     └── cancellation
+    │
+    └── Advanced TypeScript + Zod
+          ├── runtime validation
+          ├── type guards
+          └── API typing

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { toast } from "sonner"
 import { deleteFolder } from "../../api/folders"
 import { deleteNote, updateNote } from "../../api/notes"
@@ -65,15 +65,15 @@ function NotesPage() {
     setModal(MODAL_TYPE.Folder)
   }
 
-  function handleFolderDelete(folder: Folder) {
+  const handleFolderDelete = useCallback((folder: Folder) => {
     setSelectedFolder(folder)
     setModal(MODAL_TYPE.ConfirmFolder)
-  }
+  }, [])
 
-  function handleNoteEdit(note: Note) {
+  const handleNoteEdit = useCallback((note: Note) => {
     setSelectedNote(note)
     setModal(MODAL_TYPE.Note)
-  }
+  }, [])
 
   function handleNoteDelete(note: Note) {
     setSelectedNote(note)

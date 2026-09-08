@@ -53,7 +53,7 @@ function NotesGrid({
   }
 
   return (
-    <div className="grid max-h-[calc(100vh-200px)] grid-cols-2 gap-6 overflow-y-auto">
+    <div className="grid max-h-[calc(100vh-200px)] grid-cols-2 gap-6 overflow-y-auto mb-4">
       {notes.map((note) => (
         <NoteCard
           key={note.id}

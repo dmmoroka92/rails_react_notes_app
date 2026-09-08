@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import { formatDate } from "../../helpers"
 import type { Note } from "./types"
 
@@ -8,11 +8,10 @@ type NoteCardProps = {
   onDelete: (note: Note) => void
 }
 
-function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
+const NoteCard = React.memo(function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   function handleDragStart(event: React.DragEvent) {
-    console.log("Started dragging note:", note.id)
     event.dataTransfer.setData("text/plain", note.id)
   }
 
@@ -79,6 +78,6 @@ function NoteCard({ note, onEdit, onDelete }: NoteCardProps) {
       </div>
     </article>
   )
-}
+})
 
 export default NoteCard
