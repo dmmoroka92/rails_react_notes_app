@@ -1,6 +1,8 @@
 import NotesHeader from "./NotesHeader"
 import NotesGrid from "./NotesGrid"
 import type { Note } from "./types"
+import type { Pagination } from "../../types/api"
+import PaginationControls from "../Pagination/PaginationControls"
 
 type NotesPanelProps = {
   isLoading?: boolean
@@ -9,6 +11,8 @@ type NotesPanelProps = {
   onNewNote: () => void
   onEditNote: (note: Note) => void
   onDeleteNote: (note: Note) => void
+  paginationMeta?: Pagination
+  onPageChange: (pageNum: number) => void
 }
 
 function NotesPanel({
@@ -16,6 +20,8 @@ function NotesPanel({
   onNewNote,
   onEditNote,
   onDeleteNote,
+  paginationMeta,
+  onPageChange,
   isLoading = false,
   error = null 
 }: NotesPanelProps) {
@@ -29,6 +35,13 @@ function NotesPanel({
         onEditNote={onEditNote}
         onDeleteNote={onDeleteNote}
       />
+
+      {paginationMeta && (
+        <PaginationControls
+          meta={paginationMeta}
+          onPageChange={onPageChange}
+        />
+      )}
     </section>
   )
 }

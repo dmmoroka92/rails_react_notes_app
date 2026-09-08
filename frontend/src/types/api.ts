@@ -1,10 +1,3 @@
-// export type ApiResponse<T> = {
-//   data?: T,
-//   meta?: {
-//     message?: string
-//   }
-// }
-
 export type JsonApiIdentifier = {
   id: string
   type: string
@@ -21,17 +14,27 @@ export type JsonApiResource = {
   relationships?: Record<string, JsonApiRelationship>
 }
 
+export type Pagination = {
+  currentPage: number
+  nextPage: number | null
+  prevPage: number | null
+  totalPages: number
+  totalCount: number
+  perPage: number
+}
+
+export type JsonApiMeta = {
+  message?: string
+  pagination?: Pagination
+}
+
 export type JsonApiDocument = {
   data?: JsonApiResource | JsonApiResource[]
   included?: JsonApiResource[]
-  meta?: {
-    message?: string
-  }
+  meta?: JsonApiMeta
 }
 
 export type ApiResponse<T> = {
   data?: T
-  meta?: {
-    message?: string
-  }
+  meta?: JsonApiMeta
 }

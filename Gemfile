@@ -24,6 +24,8 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+gem 'kaminari', '>= 1.2.2'
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -33,7 +35,7 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
+# Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transformigem 'kaminari', '>= 1.2.2'ng-images]
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible

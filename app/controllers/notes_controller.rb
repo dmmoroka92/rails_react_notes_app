@@ -1,10 +1,18 @@
 class NotesController < ApplicationController
+  include Paginable
+
   before_action :set_note, only: %i[update destroy]
 
   def index
-    @notes = Note.unfiled
+    @notes = Note.unfiled.page(params[:page])
 
-    render json: NoteSerializer.new(@notes).serializable_hash, status: :ok
+    render json: NoteSerializer.new(
+                  @notes,
+                  meta: {
+                    pagination: pagination_meta(@notes)
+                  }  
+                ).serializable_hash,
+           status: :ok
   end
 
   def create

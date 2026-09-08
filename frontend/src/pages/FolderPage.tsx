@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router"
+import { useNavigate, useParams } from "react-router"
 
 import type { FolderWithNotes } from "../components/FoldersPanel/types"
 import { API_HOST } from "../constants/api"

@@ -26,6 +26,7 @@ type AssignNoteToFolderParams = {
 
 function NotesPage() {
   const [modal, setModal] = useState<ModalType | null>(null)
+  const [notesPage, setNotesPage] = useState<number>(1)
   const [selectedNote, setSelectedNote] = useState<Note | null>(null)
   const [selectedFolder, setSelectedFolder] = useState<Folder | null>(null)
 
@@ -73,10 +74,17 @@ function NotesPage() {
     setModal(MODAL_TYPE.ConfirmNote)
   }
 
-  const { data: notes, error, isFetching } = useQuery({
-    queryKey: [NOTES],
-    queryFn: fetchNotes
+  function handleNotesPageChange(page: number) {
+    setNotesPage(page)
+  }
+
+  const { data: fetchNotesResponse, error, isFetching } = useQuery({
+    queryKey: [NOTES, notesPage],
+    queryFn: () => fetchNotes(notesPage)
   })
+
+  const notes = fetchNotesResponse?.data
+  const notesPagination = fetchNotesResponse?.meta?.pagination
 
   const { 
     data: folders, 
@@ -87,10 +95,10 @@ function NotesPage() {
     queryFn: fetchFolders
   })
 
-  async function fetchNotes() {
-    const response =  await apiFetch<Note[]>(`${API_HOST}/notes`)
+  async function fetchNotes(pageNum: number = 1) {
+    const response =  await apiFetch<Note[]>(`${API_HOST}/notes?page=${pageNum}`)
 
-    return response.data
+    return response
   }
 
   async function fetchFolders() {
@@ -164,6 +172,8 @@ function NotesPage() {
           onNewNote={() => setModal(MODAL_TYPE.Note)}
           onEditNote={handleNoteEdit}
           onDeleteNote={handleNoteDelete}
+          paginationMeta={notesPagination}
+          onPageChange={handleNotesPageChange}
         />
       </div>
 
