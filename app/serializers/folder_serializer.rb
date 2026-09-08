@@ -6,5 +6,7 @@ class FolderSerializer
     folder.notes.count
   end
 
-  has_many :notes
+  has_many :notes do |_folder, params|
+    params[:notes]
+  end
 end

@@ -1,4 +1,6 @@
 class FoldersController < ApplicationController
+  include Paginable
+
   before_action :set_folder, only: %i[show update destroy]
 
   def index
@@ -8,10 +10,17 @@ class FoldersController < ApplicationController
   end
 
   def show
+    notes = @folder.notes.page(params[:page]).per(10)
+    
     render json: FolderSerializer.new(
-      @folder,
-      include: [:notes]
-    ).serializable_hash, status: :ok
+                    @folder,
+                    meta: {
+                      pagination: pagination_meta(notes)
+                    },
+                    params: { notes: notes },
+                    include: [:notes]
+                  ).serializable_hash,
+           status: :ok
   end
 
   def create

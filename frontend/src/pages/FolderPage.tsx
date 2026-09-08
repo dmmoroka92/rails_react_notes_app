@@ -6,27 +6,37 @@ import { apiFetch } from "../lib/api/apiFetch"
 
 import { useQuery } from "@tanstack/react-query"
 import { formatDate } from "../helpers"
+import PaginationControls from "../components/Pagination/PaginationControls"
+import { useState } from "react"
 
 function FolderPage() {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const [folderNotesPage, setFolderNotesPage] = useState<number>(1)
 
-  async function fetchFolder(slug: string) {
+  async function fetchFolder(slug: string, notesPage: number) {
     const response = await apiFetch<FolderWithNotes>(
-      `${API_HOST}/folders/${slug}`,
+      `${API_HOST}/folders/${slug}?page=${notesPage}`,
     )
 
-    return response.data
+    return response
+  }
+
+  function handleNotesPageChange(page: number) {
+    setFolderNotesPage(page)
   }
 
   const {
-    data: folder,
+    data: fetchFolderResponse,
     error,
     isPending,
   } = useQuery({
-    queryKey: ["folder", slug],
-    queryFn: () => fetchFolder(slug!),
+    queryKey: ["folder", slug, folderNotesPage],
+    queryFn: () => fetchFolder(slug!, folderNotesPage),
   })
+
+  const folder = fetchFolderResponse?.data
+  const folderNotePagination = fetchFolderResponse?.meta?.pagination
 
   if (isPending) {
     return (
@@ -56,7 +66,6 @@ function FolderPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      {/* Back */}
       <button
         onClick={() => navigate(-1)}
         className="w-fit text-sm font-medium text-gray-500 
@@ -65,7 +74,6 @@ function FolderPage() {
         ← Back to notes
       </button>
 
-      {/* Folder info */}
       <section className="rounded-2xl bg-white p-6 shadow-sm">
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center 
@@ -85,7 +93,6 @@ function FolderPage() {
         </div>
       </section>
 
-      {/* Notes */}
       <section>
         <div className="mb-4">
           <h2 className="text-xl font-semibold text-gray-900">
@@ -109,26 +116,35 @@ function FolderPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {folder.notes.map((note) => (
-              <article
-                key={note.id}
-                className="rounded-2xl bg-white p-5 shadow-sm"
-              >
-                <h3 className="mb-3 text-lg font-semibold text-gray-900">
-                  {note.title}
-                </h3>
+          <div className="flex flex-col gap-6">
+            {/* Notes */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {folder.notes.map((note) => (
+                <article
+                  key={note.id}
+                  className="rounded-2xl bg-white p-5 shadow-sm"
+                >
+                  <h3 className="mb-3 text-lg font-semibold text-gray-900">
+                    {note.title}
+                  </h3>
 
-                <p className="whitespace-pre-wrap text-sm text-gray-500">
-                  {note.description}
-                </p>
+                  <p className="whitespace-pre-wrap text-sm text-gray-500">
+                    {note.description}
+                  </p>
 
-                <p className="mt-4 text-xs font-medium text-gray-400">
-                  {formatDate(note.createdAt)}
-                </p>
-              </article>
+                  <p className="mt-4 text-xs font-medium text-gray-400">
+                    {formatDate(note.createdAt)}
+                  </p>
+                </article>
+              ))}
+            </div>
 
-            ))}
+            {folderNotePagination.totalPages > 1 && (
+              <PaginationControls
+                meta={folderNotePagination}
+                onPageChange={handleNotesPageChange}
+              />
+            )}
           </div>
         )}
       </section>
